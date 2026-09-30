@@ -6,6 +6,8 @@ top of a README.
 It reads repository metadata from the GitHub API, shallow-clones the repo, then decides how to show the project —
 capturing the running app in a headless browser where possible — and composes the result into a single PNG.
 
+![alt text](image.png)
+
 ---
 
 ## What it produces
