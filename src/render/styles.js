@@ -328,14 +328,17 @@ body {
 .viewport {
   position: relative;
   width: 100%;
-  height: auto;
+  aspect-ratio: 1280 / 600;
+  max-height: 600px;
   min-height: 0;
   background: var(--surface-sunken);
   overflow: hidden;
 }
 .viewport img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
   display: block;
 }
 
