@@ -84,7 +84,13 @@ const previewFrame = preview.closest('.result__frame');
 const renderResult = (data) => {
   const url = `${location.origin}/api/cover.png?repo=${encodeURIComponent(data.fullName)}&theme=${data.theme}`;
 
-  preview.src = `${url}&t=${Date.now()}`;
+  // The cover is already written to disk by the time the result arrives, and
+  // /covers serves it as an immutable content-hash URL. Loading the preview from
+  // the render endpoint instead re-entered the pipeline, so a cache miss made
+  // the finished render look like it had not finished: the image stayed blank
+  // for the length of a second clone.
+  preview.src = `${location.origin}/covers/${data.fileName}`;
+
   downloadLink.href = `${url}&download=1`;
   openLink.href = url;
 

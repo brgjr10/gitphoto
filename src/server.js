@@ -67,7 +67,10 @@ app.post('/api/cover', async (req, res) => {
       options: req.body,
       origin: requestOrigin(req),
     });
-    res.json({ ...result, image: `/covers/${result.fileName}` });
+    // Same reasoning as the stream: the PNG is addressable at /covers, so the
+    // response carries metadata only.
+    const { buffer, ...payload } = result;
+    res.json({ ...payload, image: `/covers/${result.fileName}` });
   } catch (error) {
     log.warn(`POST /api/cover failed: ${error.message}`);
     failWith(res, error);
@@ -131,7 +134,12 @@ app.get('/api/stream', async (req, res) => {
       origin: requestOrigin(req),
       onProgress: (progress) => send('progress', progress),
     });
-    send('result', { ...result, image: `/covers/${result.fileName}` });
+    // The buffer is dropped deliberately. JSON.stringify expands a Buffer into a
+    // byte array, which turned a 486 kB cover into a 1.75 MB event, and every
+    // stream client fetches the PNG from /covers anyway. The direct PNG endpoint
+    // still uses it to skip a disk read.
+    const { buffer, ...payload } = result;
+    send('result', { ...payload, image: `/covers/${result.fileName}` });
   } catch (error) {
     send('error', { error: error.message });
   } finally {
