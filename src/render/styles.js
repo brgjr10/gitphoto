@@ -278,6 +278,7 @@ body {
   position: relative;
   flex: 0 0 auto;
   min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   background: var(--card);
@@ -328,8 +329,8 @@ body {
 .viewport {
   position: relative;
   width: 100%;
-  max-height: 100%;
   height: auto;
+  max-height: 100%;
   min-height: 0;
   background: var(--surface-sunken);
   overflow: hidden;
