@@ -340,6 +340,7 @@ body {
   display: block;
 }
 .viewport--contain img { object-fit: contain; }
+.viewport--fill img { object-fit: fill; }
 
 /* A failed image leaves the viewport empty. This keeps the cover looking
    deliberate instead of showing a broken graphic. */

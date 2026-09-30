@@ -165,10 +165,10 @@ export const buildBannerHtml = async ({ repo, preview, commit, theme = 'dark', l
   // Evaluated once: the chrome splits the same value into host and path.
   const address = chromeUrl(repo, preview);
 
-  const stage = `<div class="stage">
+const stage = `<div class="stage">
     <div class="frame">
       <div class="chrome">
-        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="dots"><i></i><i></i></div>
         <div class="url">${icon(preview.kind === 'site' ? 'play' : 'image', 12)}<b>${escapeHtml(
           address.split('/')[0],
         )}</b><span>${escapeHtml(address.replace(/^[^/]+/, '') || '/')}</span></div>

@@ -144,11 +144,8 @@ const realize = async (strategy, { dir, repo, deadline, onProgress }) => {
 
   if (strategy.kind === 'image') {
     onProgress({ stage: 'preview', detail: 'Fetching README screenshot' });
-    const { dataUri, size } = await fetchImageDataUri(strategy.url);
-    // A tall screenshot cropped to `top` keeps the app's header and primary UI.
-    // A wide one (banner, diagram) must be contained or it loses both edges.
-    const contain = size ? size.width / size.height > 1.5 : false;
-    return { kind: 'image', dataUri, contain, label: strategy.label, source: strategy.url };
+    const { dataUri } = await fetchImageDataUri(strategy.url);
+    return { kind: 'image', dataUri, contain: false, label: strategy.label, source: strategy.url };
   }
 
   if (strategy.kind === 'static') {
