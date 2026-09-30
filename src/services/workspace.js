@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { mkdir, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { config } from '../config.js';
@@ -94,9 +95,9 @@ const run = (command, args, { cwd, timeoutMs = 120_000, env } = {}) =>
     });
   });
 
-// Reusing a clone across renders keeps the service fast for repeat requests, but
-// an unattended service should not grow without bound. Anything untouched since
-// a full TTL is swept on a random slice so a burst never stalls a request.
+// A clone is removed when its render finishes, but a crash or a killed process
+// leaves the directory behind, and an unattended service should not grow
+// without bound. Anything untouched for a full TTL is swept.
 const IDLE_SWEEP_MS = 60 * 60 * 1000;
 
 export const sweepStaleClones = async () => {
@@ -127,8 +128,12 @@ export const sweepStaleClones = async () => {
 };
 
 export const cloneRepo = async ({ owner, repo, branch }) => {
-  const dir = join(config.cloneDir, `${owner}__${repo}`);
-  await rm(dir, { recursive: true, force: true });
+  // The directory must be unique per call, not per repo. Nothing ever reuses a
+  // clone (each call starts from scratch and the pipeline deletes it afterwards),
+  // so a stable name bought nothing while letting two concurrent renders of the
+  // same repo share one path. The loser's `rm -rf` then deleted the winner's
+  // in-flight pack, which git reports as "fetch-pack: invalid index-pack output".
+  const dir = join(config.cloneDir, `${owner}__${repo}__${randomBytes(4).toString('hex')}`);
   await mkdir(config.cloneDir, { recursive: true });
 
   const auth = process.env.GITHUB_TOKEN
