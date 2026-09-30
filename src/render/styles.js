@@ -327,9 +327,7 @@ body {
 
 .viewport {
   position: relative;
-  width: 100%;
-  aspect-ratio: 1280 / 600;
-  max-height: 600px;
+  flex: 1 1 auto;
   min-height: 0;
   background: var(--surface-sunken);
   overflow: hidden;
@@ -341,6 +339,7 @@ body {
   object-position: top center;
   display: block;
 }
+.viewport--contain img { object-fit: contain; }
 
 /* A failed image leaves the viewport empty. This keeps the cover looking
    deliberate instead of showing a broken graphic. */
