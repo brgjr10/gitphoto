@@ -328,7 +328,7 @@ body {
 .viewport {
   position: relative;
   width: 100%;
-  max-height: 600px;
+  max-height: 100%;
   height: auto;
   min-height: 0;
   background: var(--surface-sunken);
