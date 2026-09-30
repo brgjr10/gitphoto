@@ -1,0 +1,24 @@
+{
+  "name": "gitphoto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted service that renders a 1280x640 README cover photo for any GitHub repo by previewing the app in a headless browser.",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "postinstall": "playwright install --with-deps chromium || playwright install chromium",
+    "smoke": "node scripts/smoke.mjs",
+    "test": "node scripts/test-static-capture.mjs",
+    "verify": "node scripts/verify-layout.mjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "playwright": "^1.49.1"
+  }
+}

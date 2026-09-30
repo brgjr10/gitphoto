@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gitphoto — README covers for any repository</title>
+<meta name="description" content="Self-hosted service that renders a 1280x600 cover photo for a GitHub repository README.">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230d1117'/><rect x='6' y='9' width='20' height='14' rx='2.5' fill='none' stroke='%2358a6ff' stroke-width='2'/><circle cx='11' cy='14' r='1.6' fill='%2358a6ff'/></svg>">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand__mark"></span>
+    <span class="brand__name">gitphoto</span>
+  </div>
+  <div class="status" id="status" data-tone="idle">
+    <span class="status__dot"></span>
+    <span class="status__text">Ready</span>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="panel">
+    <h1 class="headline">Cover photos for your repository</h1>
+    <p class="sub">Point it at a repo. It clones, previews the app in a headless browser, and renders a 1280&times;600 PNG sized for the top of a README.</p>
+
+    <form class="form" id="form" autocomplete="off">
+      <div class="field">
+        <label for="repo">Repository</label>
+        <input id="repo" name="repo" type="text" placeholder="owner/repo" spellcheck="false" required>
+      </div>
+      <div class="row">
+        <div class="field field--sm">
+          <label for="theme">Theme</label>
+          <select id="theme" name="theme">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+        <div class="field field--sm">
+          <label for="branch">Branch</label>
+          <input id="branch" name="branch" type="text" placeholder="default" spellcheck="false">
+        </div>
+        <div class="field field--sm field--check">
+          <label for="refresh">Force rebuild</label>
+          <input id="refresh" name="refresh" type="checkbox">
+        </div>
+      </div>
+      <div class="actions">
+        <button type="submit" id="submit">Generate cover</button>
+        <button type="button" class="ghost" id="cancel" hidden>Cancel</button>
+      </div>
+    </form>
+
+    <ol class="progress" id="progress" hidden>
+      <li data-stage="meta"><span class="tick"></span>Reading metadata</li>
+      <li data-stage="clone"><span class="tick"></span>Cloning repository</li>
+      <li data-stage="detect"><span class="tick"></span>Inspecting structure</li>
+      <li data-stage="preview"><span class="tick"></span>Previewing the app</li>
+      <li data-stage="compose"><span class="tick"></span>Composing cover</li>
+    </ol>
+
+    <p class="error" id="error" hidden></p>
+  </section>
+
+  <section class="result" id="result" hidden>
+    <div class="result__frame">
+      <img id="preview" alt="Generated cover preview">
+      <div class="result__spinner" id="spinner"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="result__meta" id="meta"></div>
+
+    <div class="snippet">
+      <div class="snippet__head">
+        <span>README snippet</span>
+        <button type="button" id="copy" class="ghost ghost--sm">Copy</button>
+      </div>
+      <pre><code id="markdown"></code></pre>
+    </div>
+
+    <div class="actions actions--split">
+      <a class="button" id="download" download>Download PNG</a>
+      <a class="button button--ghost" id="open" target="_blank" rel="noopener">Open image URL</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span id="foot-note">Renders on demand. Covers are cached until the repository is pushed to again.</span>
+</footer>
+
+<script src="/app.js" type="module"></script>
+</body>
+</html>

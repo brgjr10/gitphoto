@@ -1,0 +1,12 @@
+node_modules/
+data/
+cache/
+tmp/
+.env
+assets/fonts/*.woff2
+assets/fonts/*.woff
+assets/fonts/fonts.css
+assets/fonts/fonts.inline.css
+smoke-*.png
+smoke-*.html
+*.log

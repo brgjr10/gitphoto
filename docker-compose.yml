@@ -1,0 +1,30 @@
+services:
+  gitphoto:
+    build: .
+    image: gitphoto:latest
+    container_name: gitphoto
+    restart: unless-stopped
+    ports:
+      - "${PORT:-9780}:9780"
+    env_file:
+      - .env
+    environment:
+      # Inside the container the data volume is a Linux path, never the host's.
+      DATA_DIR: /data
+      PORT: "9780"
+    volumes:
+      - gitphoto-data:/data
+    # Chromium crashes with "session deleted" when /dev/shm is left at 64 MB,
+    # which is the Docker default.
+    shm_size: 1gb
+    # A shallow clone plus a browser launch is heavier than the compose default.
+    mem_limit: 2g
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9780/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  gitphoto-data:
