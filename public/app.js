@@ -79,6 +79,8 @@ const formatBytes = (bytes) => {
 
 const formatMs = (ms) => (ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(1)} s`);
 
+const previewFrame = preview.closest('.result__frame');
+
 const renderResult = (data) => {
   const url = `${location.origin}/api/cover.png?repo=${encodeURIComponent(data.fullName)}&theme=${data.theme}`;
 
@@ -99,7 +101,6 @@ const renderResult = (data) => {
   result.hidden = false;
   setStatus('ok', 'Done');
 };
-
 const stopStream = () => {
   if (stream) {
     stream.close();

@@ -276,7 +276,7 @@ body {
 
 .frame {
   position: relative;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -327,20 +327,17 @@ body {
 
 .viewport {
   position: relative;
-  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
   min-height: 0;
   background: var(--surface-sunken);
   overflow: hidden;
 }
 .viewport img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  height: auto;
   display: block;
 }
-.viewport--contain img { object-fit: contain; }
-.viewport--fill img { object-fit: fill; }
 
 /* A failed image leaves the viewport empty. This keeps the cover looking
    deliberate instead of showing a broken graphic. */

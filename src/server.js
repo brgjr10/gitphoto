@@ -26,7 +26,7 @@ app.use(
   }),
 );
 
-app.use(express.static(config.publicDir, { extensions: ['html'], maxAge: '1h' }));
+app.use(express.static(config.publicDir, { extensions: ['html'], maxAge: '0s', mustRevalidate: true }));
 
 // The banner is served from `/covers`, but the service may be reached through a
 // reverse proxy, so an explicit forwarded-host beats req.headers.host.

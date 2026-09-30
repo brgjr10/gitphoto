@@ -217,14 +217,15 @@ button:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
 
 .result__frame {
   position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 600;
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
   background: var(--card);
   box-shadow: 0 20px 48px -20px rgba(0,0,0,0.75);
-  min-height: 180px;
 }
-.result__frame img { display: block; width: 100%; height: auto; }
+.result__frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .result__spinner {
   position: absolute; inset: 0;
