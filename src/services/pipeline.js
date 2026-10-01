@@ -124,3 +124,21 @@ export const startBackgroundTasks = () => {
 };
 
 export const stats = () => ({ active: gate.active, queued: gate.pending, limit: config.renderConcurrency });
+
+// Shutdown drains through this instead of closing the browser mid-render, which
+// would leave a half-written PNG in the covers directory.
+export const waitForIdle = (timeoutMs) =>
+  new Promise((resolvePromise) => {
+    if (gate.active === 0 && gate.pending === 0) return resolvePromise(true);
+    const deadline = Date.now() + timeoutMs;
+    const poll = setInterval(() => {
+      if (gate.active === 0 && gate.pending === 0) {
+        clearInterval(poll);
+        resolvePromise(true);
+      } else if (Date.now() > deadline) {
+        clearInterval(poll);
+        resolvePromise(false);
+      }
+    }, 100);
+    poll.unref?.();
+  });

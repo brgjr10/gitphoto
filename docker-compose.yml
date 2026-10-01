@@ -20,11 +20,14 @@ services:
     # A shallow clone plus a browser launch is heavier than the compose default.
     mem_limit: 2g
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9780/api/health"]
+      # Readiness, not liveness: Chromium has to launch before the first render
+      # can succeed, so a container that only proves the port is open sends its
+      # first customer into a browser launch timeout.
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9780/api/ready"]
       interval: 30s
-      timeout: 5s
+      timeout: 15s
       retries: 3
-      start_period: 20s
+      start_period: 60s
 
 volumes:
   gitphoto-data:

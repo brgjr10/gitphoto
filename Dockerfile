@@ -28,7 +28,9 @@ RUN npx playwright install --with-deps chromium
 COPY src ./src
 COPY public ./public
 COPY assets ./assets
-COPY .env.example ./
+# No .env.example copy: the container reads real configuration from the
+# environment (compose env_file / `docker run -e`), and shipping a placeholder
+# file implied a fallback that does not exist.
 
 RUN mkdir -p /data && chown -R node:node /app /data
 USER node

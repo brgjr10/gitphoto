@@ -14,7 +14,8 @@
     "fonts": "node scripts/fetch-fonts.mjs",
     "postinstall": "playwright install --with-deps chromium || playwright install chromium",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node scripts/test-static-capture.mjs",
+    "test": "node --test test/server.test.js && npm run test:layout",
+    "test:layout": "node scripts/test-static-capture.mjs",
     "verify": "node scripts/verify-layout.mjs"
   },
   "dependencies": {

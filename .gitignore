@@ -3,6 +3,9 @@ data/
 cache/
 tmp/
 .env
+# Any other env-shaped local file is a secret too; the example stays tracked.
+.env.*
+!.env.example
 assets/fonts/*.woff2
 assets/fonts/*.woff
 assets/fonts/fonts.css

@@ -52,6 +52,13 @@ export const closeBrowser = async () => {
   if (instance) await instance.close().catch(() => {});
 };
 
+// Readiness: a launch attempt is the only honest answer, since a missing
+// Chromium binary or a cold cache both look identical to a liveness check.
+export const probeBrowser = async () => {
+  const instance = await getBrowser();
+  return { connected: Boolean(instance?.isConnected()), version: instance?.version?.() ?? null };
+};
+
 const newPage = async (browser, viewport) => {
   const context = await browser.newContext({
     viewport,

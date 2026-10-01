@@ -1,0 +1,38 @@
+# The Dockerfile copies named paths (package.json, scripts/, src/, public/,
+# assets/) rather than the repo root, so a root .env is not copied today. This
+# keeps that true if a COPY . . is ever added, and keeps .git and node_modules
+# out of the build context either way.
+
+# Local secrets - the blanked .env.example is the tracked one.
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# Dependencies and lockfile drift
+node_modules
+
+# Local data written at runtime: shallow clones, generated covers, cache
+data
+
+# Test and QA artifacts
+.qa-tmp/
+test/
+.playwright-mcp/
+
+# Docker config and docs (not needed in the image)
+Dockerfile
+docker-compose.yml
+.dockerignore
+README.md
+*.md
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
