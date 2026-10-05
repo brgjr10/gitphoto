@@ -136,6 +136,22 @@ Stages: `meta` → `clone` → `detect` → `preview` → `compose` → `done`.
 Reports the active themes, whether the bundled fonts loaded, whether installs are enabled, and live render queue
 depth.
 
+### `GET /:owner/:repo` and `GET /:owner/:repo/tree/:branch`
+
+A GitHub URL with the host swapped is a shortcut into the web UI. Swapping
+`github.com` for the gitphoto host — `https://github.com/brgjr10/pit-tv` →
+`https://gitphoto.com/brgjr10/pit-tv` — fills the form and starts rendering.
+The optional `/tree/branch` segment mirrors GitHub's own branch URLs.
+
+```
+https://gitphoto.com/brgjr10/pit-tv
+https://gitphoto.com/brgjr10/pit-tv/tree/main
+```
+
+Both segments are validated with the same rules as a repository reference, so a
+`..` or any other path-traversal attempt answers 404 rather than reaching the
+SPA.
+
 ---
 
 ## Caching
@@ -188,7 +204,7 @@ actually loaded. It has caught three real defects that were invisible in the out
 ```
 src/
   config.js              environment and paths
-  server.js              HTTP routes, SSE, graceful shutdown
+  server.js              HTTP routes, SSE, graceful shutdown, GitHub URL shortcut
   lib/
     cover-cache.js       content-addressed cache
     image-size.js        PNG/JPEG/GIF/WebP header dimensions

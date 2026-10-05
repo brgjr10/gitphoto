@@ -256,6 +256,29 @@ app.get('/api/config', (req, res) => {
   });
 });
 
+// GitHub URL shortcut. Swapping the host on a github.com URL —
+// https://github.com/brgjr10/pit-tv → https://gitphoto.com/brgjr10/pit-tv —
+// lands on the web UI with the form pre-filled and rendering started. The
+// optional /tree/branch segment mirrors GitHub's own branch URLs.
+// `..` is rejected outright: a branch like `../../etc` would otherwise pass
+// the character class and the redirect would carry it to the client.
+const isValidRepoSegment = (segment) => /^[\w.-]+$/.test(segment) && !segment.includes('..');
+app.get(['/:owner/:repo', '/:owner/:repo/tree/:branch'], (req, res) => {
+  const { owner, repo, branch } = req.params;
+  if (!isValidRepoSegment(owner) || !isValidRepoSegment(repo)) {
+    return res.status(404).type('text/plain').send('Not found');
+  }
+  // A malformed branch is rejected rather than silently dropped: the caller
+  // asked for that branch, and answering 200 with a different one would hide
+  // the mistake.
+  if (branch && !isValidRepoSegment(branch)) {
+    return res.status(404).type('text/plain').send('Not found');
+  }
+  const params = new URLSearchParams({ repo: `${owner}/${repo}` });
+  if (branch) params.set('branch', branch);
+  return res.redirect(302, `/?${params.toString()}`);
+});
+
 app.use((req, res) => {
   if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
   res.sendFile(join(config.publicDir, 'index.html'));

@@ -110,6 +110,40 @@ describe('readiness probe', () => {
   });
 });
 
+describe('GitHub URL shortcut', () => {
+  it('redirects /owner/repo to the web UI with the form pre-filled', async () => {
+    const res = await fetch(`${base}/brgjr10/pit-tv`, { redirect: 'manual' });
+    assert.equal(res.status, 302);
+    assert.equal(res.headers.get('location'), '/?repo=brgjr10%2Fpit-tv');
+  });
+
+  it('redirects /owner/repo/tree/branch with the branch filled in', async () => {
+    const res = await fetch(`${base}/brgjr10/pit-tv/tree/main`, { redirect: 'manual' });
+    assert.equal(res.status, 302);
+    assert.equal(res.headers.get('location'), '/?repo=brgjr10%2Fpit-tv&branch=main');
+  });
+
+  it('answers a segment with an invalid character with 404', async () => {
+    const res = await fetch(`${base}/brgjr%2F10/pit-tv`, { redirect: 'manual' });
+    assert.equal(res.status, 404);
+  });
+
+  it('answers a branch containing `..` with 404', async () => {
+    const raw = await rawRequest('/brgjr10/pit-tv/tree/feat..urel');
+    assert.equal(statusOf(raw), 404);
+  });
+
+  it('answers a traversal attempt with 404, not the SPA', async () => {
+    const raw = await rawRequest('/brgjr10/pit-tv/tree/..%2f..%2f.env');
+    assert.equal(statusOf(raw), 404);
+  });
+
+  it('leaves API routes alone', async () => {
+    const res = await fetch(`${base}/api/health`);
+    assert.equal(res.status, 200);
+  });
+});
+
 describe('secret hygiene (GITPHOTO-001 regression)', () => {
   // A PAT body, in either the classic or the fine-grained form.
   const TOKEN_PATTERN = '(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})';
