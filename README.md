@@ -87,6 +87,54 @@ npm start
 Strategy 3 runs third-party `npm install` lifecycle scripts and starts the repo's dev server. It is off by
 default for that reason. Turn it on only for repositories you trust, and prefer a private instance for it.
 
+### If you want a gitphoto.com proxy (your own domain)
+
+The cover snippet looks right on a real domain — `https://gitphoto.com/api/cover.png?repo=owner/repo`
+rather than an IP and port. The service needs no changes: it answers plain HTTP on `PORT` and DNS plus a
+TLS-terminating proxy do the front work. Three pieces:
+
+**1. DNS.** Register a domain (or use a subdomain such as `gitphoto.example.com`) and point it at the host:
+
+| Record | Value | When |
+|--------|-------|------|
+| `A` | Host's public IPv4 | Port 9780 is reachable from the internet |
+| `CNAME` | Tunnel hostname | Host sits behind NAT / has no public IP (use step 2) |
+
+Propagation is usually minutes, occasionally an hour.
+
+**2. Reachability.** Home lab with no public IP? Skip port forwarding and put a tunnel in front instead:
+
+```bash
+cloudflared tunnel --url http://localhost:9780   # prints a *.trycloudflare.com URL to CNAME
+```
+
+`tailscale funnel 9780` and `ngrok http 9780` work too. A tunnel's hostname is what the `CNAME` from
+step 1 points at.
+
+**3. TLS.** GitHub READMEs require `https://`. A tunnel already provides it; for a public IP, one Caddy
+file covers proxying and certificates:
+
+```
+gitphoto.com {
+    reverse_proxy 127.0.0.1:9780
+}
+```
+
+Caddy fetches and renews the Let's Encrypt certificate automatically. Keep the resulting `*.crt` /
+`*.key` files out of the repo — `.gitignore` already excludes them.
+
+Then the snippet in your README becomes:
+
+```html
+<p align="center">
+  <img src="https://gitphoto.com/api/cover.png?repo=deadvisionai/FactorApp&theme=dark" alt="FactorApp" width="100%">
+</p>
+```
+
+Because the domain lives entirely in DNS, one instance can serve any number of domains, and switching
+hosts is a DNS edit rather than a re-deploy. Keep `ALLOW_INSTALLS=false` on anything reachable from the
+internet.
+
 ---
 
 ## API
